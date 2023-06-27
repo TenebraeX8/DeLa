@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DecompilableLanguage": {
+      "commandName": "Project",
+      "commandLineArgs": "test.inp test.out"
+    }
+  }
+}

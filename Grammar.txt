@@ -1,0 +1,21 @@
+DeLa = "SCRIPT" ident VarDecl {Statements} "END" ident "." .
+
+VarDecl = "VAR" ident {"," ident} ";" .
+
+Statements = Statement {";" Statement} .
+
+Statement = [
+			ident "=" Expression 
+			|  "OUT" Expression
+			]            
+.
+
+Expression = [Addop] Term {Addop Term}.
+
+Term = Factor {Mulop Factor}.
+
+Factor = (ident | number | "(" Expression ")").
+
+Addop = ('+' | '-').
+
+Mulop = ('*' | '/' | '%').

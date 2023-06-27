@@ -1,0 +1,104 @@
+using DecompilableLanguage.Instructions;
+using DecompilableLanguage.Compiler.Symbols;
+using DecompilableLanguage.Compiler.Code;
+
+COMPILER DeLa
+
+public SymbolTable tab {get;set;}
+public CodeGenerator code {get;set;}
+
+public void Error(string text)
+{
+    Console.WriteLine(text);
+    this.errors.count++;
+}
+
+CHARACTERS
+// Declare character sets such as letters or digits. Example: a, B, 0, 1
+    letter = 'a' .. 'z' + 'A' .. 'Z' .
+    digit = '0' .. '9'.    
+    char = ANY .
+    
+TOKENS
+// Specify scanner, in which the tokens (or terminalsymbols) of the language are declared. Example:
+    ident = letter {'_' | letter | digit}.
+    number = digit {digit}.
+    charCon = "'" char "'".
+
+COMMENTS FROM "/*" TO "*/" NESTED // Block Comment
+COMMENTS FROM "//" TO '\n'     // Line Comment
+IGNORE '\r' + '\n' + '\t'  // Ignore whitespace
+
+PRODUCTIONS
+    DeLa = "SCRIPT" ident (.tab.ScriptName(t.val);.)
+           VarDecl Statements "END" ident ".".
+
+    VarDecl = "VAR" 
+              ident (.tab.Insert(t.val, SymbolObj.Var, SymbolTable.IntegerType);.)
+              {
+                "," ident (.tab.Insert(t.val, SymbolObj.Var, SymbolTable.IntegerType);.)
+              } 
+              ";" 
+    .
+
+    Statements = Statement {";" Statement} .
+
+    Statement = [
+                ident  (. var obj = tab.Find(t.val); .)
+                "="
+                Expression (.
+                    if(obj != null)
+                        code.Store(obj.adr);
+                .)
+
+                |  "OUT" Expression
+                ]            
+    .
+
+    Expression = (.bool isNeg = false; byte op;.) 
+                [
+                    Addop<out op> (.if(op == Instruction.SUB) isNeg = true;.)
+                ] 
+                Term 
+                {
+                    Addop<out op> 
+                    Term           (.code.Instr(op);.)
+                }
+    .
+
+    Term = (.byte op;.)
+                Factor 
+                {
+                    Mulop<out op> 
+                    Factor          (.code.Instr(op);.)
+                }
+    .
+
+    Factor = (
+        ident       (.
+            var obj = tab.Find(t.val);
+            if(obj != null)
+                code.Load(obj.adr);
+        .)
+        | number (.code.Push(int.Parse(t.val));.)
+        | "(" 
+        Expression 
+        ")"
+    )
+    .
+
+    Addop<out byte op> = (.op = 0;.)
+    (
+        '+'         (.op = Instruction.ADD;.)
+        | '-'       (.op = Instruction.SUB;.)
+    )
+    .
+
+    Mulop<out byte op> = (.op = 0;.)
+    (
+        '*'         (.op = Instruction.MUL;.)
+        | '/'       (.op = Instruction.DIV;.)
+        | '%'       (.op = Instruction.MOD;.)
+    )
+    .
+END DeLa.
