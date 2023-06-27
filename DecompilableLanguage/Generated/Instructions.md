@@ -21,6 +21,10 @@ The runtime features a 4-Byte aligned expression stack, as well as a data-area c
 | DEC       | 0x11 | Decreases the topmost value on the stack by 1 |
 | SHR       | 0x12 | Shift Right on bitlevel |
 | SHL       | 0x13 | Shift Left on bitlevel |
+| NOT       | 0x14 | Negation on bitlevel |
+| AND       | 0x15 | And on bitlevel |
+| OR        | 0x16 | Or on bitlevel |
+| XOR       | 0x17 | Xor on bitlevel |
 | Out       | 0x20 | Prints the current top of the Expression stack |
 
 
@@ -168,6 +172,46 @@ Example:
         ...         --Stack: {1, 1, 4}
         Shl         --Stack: {1, 16}
         Shl         --Stack: {65536}
+
+### Not
+```Not```
+Applies a bitwise not on the topmost value.
+Example:
+
+    Code:
+        ...         --Stack: {0}
+        Not         --Stack: {-1}
+        Not         --Stack: {0}
+
+### And
+```And```
+Applies a bitwise and on the topmost values.
+Example:
+
+    Code:
+        ...         --Stack: {5, 3, 1}
+        And         --Stack: {5, 1}
+        And         --Stack: {5}
+
+### Or
+```Or```
+Applies a bitwise or on the topmost values.
+Example:
+
+    Code:
+        ...         --Stack: {1, 5, 2}
+        Or          --Stack: {1, 7}
+        Or          --Stack: {7}
+
+### Xor
+```Xor```
+Applies a bitwise xor on the topmost values.
+Example:
+
+    Code:
+        ...          --Stack: {1, 5, 2}
+        Xor          --Stack: {1, 7}
+        Xor          --Stack: {6}
 
 ### Out
 ```Out```

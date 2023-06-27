@@ -74,26 +74,28 @@ PRODUCTIONS
                 }
     .
 
-    Factor = (
-        (.byte op = 0xFF;.)
-        [
-            "INC"   (.op = Instruction.INC;.)
-            | "DEC" (.op = Instruction.DEC;.)
-        ]
+    Factor = 
+    (.byte op = 0xFF;.)
+    [
+        "INC"   (.op = Instruction.INC;.)
+        | "DEC" (.op = Instruction.DEC;.)
+        | "~"   (.op = Instruction.NOT;.)
+    ]
+    (
         ident       (.
             var obj = tab.Find(t.val);
             if(obj != null)
-            {
                 code.Load(obj.adr);
-                if(op != 0xFF)
-                   code.Instr(op);
-            }
         .)
         | number (.code.Push(int.Parse(t.val));.)
         | "(" 
         Expression 
         ")"
     )
+    (.
+        if(op != 0xFF)
+            code.Instr(op);
+    .)
     .
 
     Addop<out byte op> = (.op = 0;.)
@@ -110,6 +112,9 @@ PRODUCTIONS
         | '%'       (.op = Instruction.MOD;.)
         | ">>"       (.op = Instruction.SHR;.)
         | "<<"       (.op = Instruction.SHL;.)
+        | '&'       (.op = Instruction.AND;.)
+        | '|'       (.op = Instruction.OR;.)
+        | '^'       (.op = Instruction.XOR;.)
     )
     .
 END DeLa.

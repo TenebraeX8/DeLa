@@ -58,6 +58,10 @@ namespace DecompilableLanguage.Compiler.Code
         public void Dec() => Instr(Instruction.DEC);
         public void Shr() => Instr(Instruction.SHR);
         public void Shl() => Instr(Instruction.SHL);
+        public void Not() => Instr(Instruction.NOT);
+        public void And() => Instr(Instruction.AND);
+        public void Or() => Instr(Instruction.OR);
+        public void Xor() => Instr(Instruction.XOR);
 
         public byte[] Generate() => this.code.Take(this.pc).ToArray();
     }

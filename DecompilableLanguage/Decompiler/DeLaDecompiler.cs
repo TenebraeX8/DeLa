@@ -43,6 +43,9 @@ namespace DecompilableLanguage.Decompiler
                 case Instruction.MOD: return "%";
                 case Instruction.SHR: return ">>";
                 case Instruction.SHL: return "<<";
+                case Instruction.AND: return "&";
+                case Instruction.OR:  return "|";
+                case Instruction.XOR: return "^";
                 default: throw new DecompilerException($"Opcode {op} does not describe a binary operator!");
             }
         }
@@ -63,10 +66,14 @@ namespace DecompilableLanguage.Decompiler
                 case Instruction.MOD:
                 case Instruction.SHR:
                 case Instruction.SHL:
+                case Instruction.AND:
+                case Instruction.OR:
+                case Instruction.XOR:
                     return $"({Generate(node.LeftChild)} {BinaryOpToString(node.Instr)} {Generate(node.RightChild)})";
                 case Instruction.NEG: return $"-({Generate(node.LeftChild)})";
                 case Instruction.INC: return $"INC ({Generate(node.LeftChild)})";
                 case Instruction.DEC: return $"DEC ({Generate(node.LeftChild)})";
+                case Instruction.NOT: return $"~({Generate(node.LeftChild)})";
                 case Instruction.OUT: return $"OUT {Generate(node.LeftChild)}";
                 default:
                     throw new DecompilerException($"Unknown opcode {node.Instr}");
@@ -109,6 +116,9 @@ namespace DecompilableLanguage.Decompiler
                     case Instruction.MOD:
                     case Instruction.SHR:
                     case Instruction.SHL:
+                    case Instruction.AND:
+                    case Instruction.OR:
+                    case Instruction.XOR:
                         node = new DecompilerNode(code[pc - 1]);
                         node.RightChild = ExprStack.Pop();
                         node.LeftChild = ExprStack.Pop();
@@ -117,6 +127,7 @@ namespace DecompilableLanguage.Decompiler
                     case Instruction.NEG:
                     case Instruction.INC:
                     case Instruction.DEC:
+                    case Instruction.NOT:
                         node = new DecompilerNode(code[pc - 1]);
                         node.LeftChild = ExprStack.Pop();
                         ExprStack.Push(node);

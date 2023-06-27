@@ -13,7 +13,7 @@ public class Parser {
 	public const int _ident = 1;
 	public const int _number = 2;
 	public const int _charCon = 3;
-	public const int maxT = 23;
+	public const int maxT = 27;
 
 	const bool _T = true;
 	const bool _x = false;
@@ -145,13 +145,13 @@ public void Error(string text)
 
 	void Expression() {
 		bool isNeg = false; byte op;
-		if (la.kind == 16 || la.kind == 17) {
+		if (la.kind == 17 || la.kind == 18) {
 			Addop(out op);
 			if(op == Instruction.SUB) isNeg = true;
 		}
 		Term();
 		if(isNeg)code.Neg();
-		while (la.kind == 16 || la.kind == 17) {
+		while (la.kind == 17 || la.kind == 18) {
 			Addop(out op);
 			Term();
 			code.Instr(op);
@@ -160,13 +160,13 @@ public void Error(string text)
 
 	void Addop(out byte op) {
 		op = 0;
-		if (la.kind == 16) {
+		if (la.kind == 17) {
 			Get();
 			op = Instruction.ADD;
-		} else if (la.kind == 17) {
+		} else if (la.kind == 18) {
 			Get();
 			op = Instruction.SUB;
-		} else SynErr(24);
+		} else SynErr(28);
 	}
 
 	void Term() {
@@ -180,54 +180,83 @@ public void Error(string text)
 	}
 
 	void Factor() {
-		if (la.kind == 1 || la.kind == 12 || la.kind == 13) {
-			byte op = 0xFF;
-			if (la.kind == 12 || la.kind == 13) {
-				if (la.kind == 12) {
-					Get();
-					op = Instruction.INC;
-				} else {
-					Get();
-					op = Instruction.DEC;
-				}
+		byte op = 0xFF;
+		if (la.kind == 12 || la.kind == 13 || la.kind == 14) {
+			if (la.kind == 12) {
+				Get();
+				op = Instruction.INC;
+			} else if (la.kind == 13) {
+				Get();
+				op = Instruction.DEC;
+			} else {
+				Get();
+				op = Instruction.NOT;
 			}
-			Expect(1);
+		}
+		if (la.kind == 1) {
+			Get();
 			var obj = tab.Find(t.val);
 			if(obj != null)
-			{
 			   code.Load(obj.adr);
-			   if(op != 0xFF)
-			      code.Instr(op);
-			}
 			
 		} else if (la.kind == 2) {
 			Get();
 			code.Push(int.Parse(t.val));
-		} else if (la.kind == 14) {
+		} else if (la.kind == 15) {
 			Get();
 			Expression();
-			Expect(15);
-		} else SynErr(25);
+			Expect(16);
+		} else SynErr(29);
+		if(op != 0xFF)
+		   code.Instr(op);
+		
 	}
 
 	void Mulop(out byte op) {
 		op = 0;
-		if (la.kind == 18) {
+		switch (la.kind) {
+		case 19: {
 			Get();
 			op = Instruction.MUL;
-		} else if (la.kind == 19) {
+			break;
+		}
+		case 20: {
 			Get();
 			op = Instruction.DIV;
-		} else if (la.kind == 20) {
+			break;
+		}
+		case 21: {
 			Get();
 			op = Instruction.MOD;
-		} else if (la.kind == 21) {
+			break;
+		}
+		case 22: {
 			Get();
 			op = Instruction.SHR;
-		} else if (la.kind == 22) {
+			break;
+		}
+		case 23: {
 			Get();
 			op = Instruction.SHL;
-		} else SynErr(26);
+			break;
+		}
+		case 24: {
+			Get();
+			op = Instruction.AND;
+			break;
+		}
+		case 25: {
+			Get();
+			op = Instruction.OR;
+			break;
+		}
+		case 26: {
+			Get();
+			op = Instruction.XOR;
+			break;
+		}
+		default: SynErr(30); break;
+		}
 	}
 
 
@@ -242,8 +271,8 @@ public void Error(string text)
 	}
 	
 	static readonly bool[,] set = {
-		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_T,_x, _x}
+		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_x, _x}
 
 	};
 } // end Parser
@@ -271,19 +300,23 @@ public class Errors {
 			case 11: s = "\"OUT\" expected"; break;
 			case 12: s = "\"INC\" expected"; break;
 			case 13: s = "\"DEC\" expected"; break;
-			case 14: s = "\"(\" expected"; break;
-			case 15: s = "\")\" expected"; break;
-			case 16: s = "\"+\" expected"; break;
-			case 17: s = "\"-\" expected"; break;
-			case 18: s = "\"*\" expected"; break;
-			case 19: s = "\"/\" expected"; break;
-			case 20: s = "\"%\" expected"; break;
-			case 21: s = "\">>\" expected"; break;
-			case 22: s = "\"<<\" expected"; break;
-			case 23: s = "??? expected"; break;
-			case 24: s = "invalid Addop"; break;
-			case 25: s = "invalid Factor"; break;
-			case 26: s = "invalid Mulop"; break;
+			case 14: s = "\"~\" expected"; break;
+			case 15: s = "\"(\" expected"; break;
+			case 16: s = "\")\" expected"; break;
+			case 17: s = "\"+\" expected"; break;
+			case 18: s = "\"-\" expected"; break;
+			case 19: s = "\"*\" expected"; break;
+			case 20: s = "\"/\" expected"; break;
+			case 21: s = "\"%\" expected"; break;
+			case 22: s = "\">>\" expected"; break;
+			case 23: s = "\"<<\" expected"; break;
+			case 24: s = "\"&\" expected"; break;
+			case 25: s = "\"|\" expected"; break;
+			case 26: s = "\"^\" expected"; break;
+			case 27: s = "??? expected"; break;
+			case 28: s = "invalid Addop"; break;
+			case 29: s = "invalid Factor"; break;
+			case 30: s = "invalid Mulop"; break;
 
 			default: s = "error " + n; break;
 		}

@@ -24,6 +24,10 @@ namespace DecompilableLanguage.Instructions
         public const byte DEC = 0x11;
         public const byte SHR = 0x12;
         public const byte SHL = 0x13;
+        public const byte NOT = 0x14;
+        public const byte AND = 0x15;
+        public const byte OR = 0x16;
+        public const byte XOR = 0x17;
 
         public const byte OUT = 0x20;
 
