@@ -14,8 +14,8 @@ Expression = [Addop] Term {Addop Term}.
 
 Term = Factor {Mulop Factor}.
 
-Factor = (ident | number | "(" Expression ")").
+Factor = (["INC" | "DEC"] ident | number | "(" Expression ")").
 
 Addop = ('+' | '-').
 
-Mulop = ('*' | '/' | '%').
+Mulop = ('*' | '/' | '%' | '<<' | '>>').

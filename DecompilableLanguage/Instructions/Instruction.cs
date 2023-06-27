@@ -20,6 +20,11 @@ namespace DecompilableLanguage.Instructions
         public const byte MOD = 0x0E;
         public const byte NEG = 0x0F;
 
+        public const byte INC = 0x10;
+        public const byte DEC = 0x11;
+        public const byte SHR = 0x12;
+        public const byte SHL = 0x13;
+
         public const byte OUT = 0x20;
 
     }

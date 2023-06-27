@@ -54,6 +54,11 @@ namespace DecompilableLanguage.Compiler.Code
         public void Mod() => Instr(Instruction.MOD);
         public void Neg() => Instr(Instruction.NEG);
         public void Out() => Instr(Instruction.OUT);
+        public void Inc() => Instr(Instruction.INC);
+        public void Dec() => Instr(Instruction.DEC);
+        public void Shr() => Instr(Instruction.SHR);
+        public void Shl() => Instr(Instruction.SHL);
+
         public byte[] Generate() => this.code.Take(this.pc).ToArray();
     }
 }

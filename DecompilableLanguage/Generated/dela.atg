@@ -75,10 +75,19 @@ PRODUCTIONS
     .
 
     Factor = (
+        (.byte op = 0xFF;.)
+        [
+            "INC"   (.op = Instruction.INC;.)
+            | "DEC" (.op = Instruction.DEC;.)
+        ]
         ident       (.
             var obj = tab.Find(t.val);
             if(obj != null)
+            {
                 code.Load(obj.adr);
+                if(op != 0xFF)
+                   code.Instr(op);
+            }
         .)
         | number (.code.Push(int.Parse(t.val));.)
         | "(" 
@@ -99,6 +108,8 @@ PRODUCTIONS
         '*'         (.op = Instruction.MUL;.)
         | '/'       (.op = Instruction.DIV;.)
         | '%'       (.op = Instruction.MOD;.)
+        | ">>"       (.op = Instruction.SHR;.)
+        | "<<"       (.op = Instruction.SHL;.)
     )
     .
 END DeLa.

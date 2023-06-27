@@ -95,6 +95,16 @@ namespace DecompilableLanguage.Runtime
                             ExpressionStack.Push(ExpressionStack.Pop() % value);
                         break;
                     case Instruction.NEG: ExpressionStack.Push(-ExpressionStack.Pop()); break;
+                    case Instruction.INC: ExpressionStack.Push(ExpressionStack.Pop()+1); break;
+                    case Instruction.DEC: ExpressionStack.Push(ExpressionStack.Pop()-1); break;
+                    case Instruction.SHR:
+                        value = ExpressionStack.Pop();
+                        ExpressionStack.Push(ExpressionStack.Pop() >> value); 
+                        break;
+                    case Instruction.SHL:
+                        value = ExpressionStack.Pop();
+                        ExpressionStack.Push(ExpressionStack.Pop() << value);
+                        break;
 
                     case Instruction.OUT: Output(ExpressionStack.Pop()); break;
 

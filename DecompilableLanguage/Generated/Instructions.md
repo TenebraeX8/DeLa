@@ -17,6 +17,10 @@ The runtime features a 4-Byte aligned expression stack, as well as a data-area c
 | Div       | 0x0D | Divides the topmost 2 values and pushes the result on the stack |
 | Mod       | 0x0E | Multiplies the topmost 2 values and pushes the remainder on the stack |
 | Neg       | 0x0F | Negates the topmost value on the stack |
+| INC       | 0x10 | Increases the topmost value on the stack by 1 |
+| DEC       | 0x11 | Decreases the topmost value on the stack by 1 |
+| SHR       | 0x12 | Shift Right on bitlevel |
+| SHL       | 0x13 | Shift Left on bitlevel |
 | Out       | 0x20 | Prints the current top of the Expression stack |
 
 
@@ -123,6 +127,47 @@ Example:
         ...         --Stack: {20}
         Neg         --Stack: {-20}
         Neg         --Stack: {20}
+
+### Inc
+```Inc```
+Increases the topmost values of the stack by 1.
+Example:
+
+    Code:
+        ...         --Stack: {20}
+        Inc         --Stack: {21}
+        Inc         --Stack: {22}
+
+### Dec
+```Dec```
+Decreases the topmost values of the stack by 1.
+Example:
+
+    Code:
+        ...         --Stack: {20}
+        Dec         --Stack: {19}
+        Dec         --Stack: {18}
+
+
+### Shr
+```Shr```
+Shifts the second-topmost value by the value on top to the right on a bitlevel
+Example:
+
+    Code:
+        ...         --Stack: {16, 32, 4}
+        Shr         --Stack: {16, 2}
+        Shr         --Stack: {4}
+
+### Shl
+```Shl```
+Shifts the second-topmost value by the value on top to the left on a bitlevel
+Example:
+
+    Code:
+        ...         --Stack: {1, 1, 4}
+        Shl         --Stack: {1, 16}
+        Shl         --Stack: {65536}
 
 ### Out
 ```Out```
