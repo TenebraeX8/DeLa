@@ -97,6 +97,7 @@ public void Error(string text)
 	void DeLa() {
 		Expect(4);
 		Expect(1);
+		tab.ScriptName(t.val);
 		VarDecl();
 		Statements();
 		Expect(5);
@@ -148,6 +149,7 @@ public void Error(string text)
 			if(op == Instruction.SUB) isNeg = true;
 		}
 		Term();
+		if(isNeg)code.Neg();
 		while (la.kind == 14 || la.kind == 15) {
 			Addop(out op);
 			Term();

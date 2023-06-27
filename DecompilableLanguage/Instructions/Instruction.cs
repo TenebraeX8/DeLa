@@ -18,6 +18,9 @@ namespace DecompilableLanguage.Instructions
         public const byte MUL = 0x0C;
         public const byte DIV = 0x0D;
         public const byte MOD = 0x0E;
+        public const byte NEG = 0x0F;
+
+        public const byte OUT = 0x20;
 
     }
 }

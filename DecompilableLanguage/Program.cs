@@ -19,7 +19,7 @@ namespace DecompilableLanguage
 
             var decompiler = new DeLaDecompiler(compiler.GenerateCode(), symtable);
             string decompilerResult = decompiler.Decompile();
-            Console.WriteLine("------------Decompiled------------");
+            Console.WriteLine("\n------------Decompiled------------");
             Console.WriteLine(decompilerResult);
             using (StreamWriter sw = new StreamWriter("Decompiled_" + args[1]))
                 sw.Write(decompilerResult);

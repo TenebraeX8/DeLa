@@ -60,6 +60,8 @@ namespace DecompilableLanguage.Decompiler
                 case Instruction.DIV:
                 case Instruction.MOD:
                     return $"({Generate(node.LeftChild)} {BinaryOpToString(node.Instr)} {Generate(node.RightChild)})";
+                case Instruction.NEG: return $"-({Generate(node.LeftChild)})";
+                case Instruction.OUT: return $"OUT {Generate(node.LeftChild)}";
                 default:
                     throw new DecompilerException($"Unknown opcode {node.Instr}");
             }
@@ -103,6 +105,22 @@ namespace DecompilableLanguage.Decompiler
                         node.RightChild = ExprStack.Pop();
                         node.LeftChild = ExprStack.Pop();
                         ExprStack.Push(node);
+                        break;
+                    case Instruction.NEG:
+                        node = new DecompilerNode(code[pc - 1]);
+                        node.LeftChild = ExprStack.Pop();
+                        ExprStack.Push(node);
+                        break;
+                    case Instruction.OUT:
+                        node = new DecompilerNode(code[pc - 1]);
+                        node.LeftChild = ExprStack.Pop();
+                        if (root == null) root = node;
+                        else
+                        {
+                            DecompilerNode cur = root;
+                            while (cur.Next != null) cur = cur.Next;
+                            cur.Next = node;
+                        }
                         break;
                 }
             }

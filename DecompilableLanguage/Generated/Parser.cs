@@ -138,6 +138,7 @@ public void Error(string text)
 			} else {
 				Get();
 				Expression();
+				code.Out();
 			}
 		}
 	}
@@ -149,6 +150,7 @@ public void Error(string text)
 			if(op == Instruction.SUB) isNeg = true;
 		}
 		Term();
+		if(isNeg)code.Neg();
 		while (la.kind == 14 || la.kind == 15) {
 			Addop(out op);
 			Term();

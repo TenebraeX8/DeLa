@@ -94,6 +94,11 @@ namespace DecompilableLanguage.Runtime
                         else
                             ExpressionStack.Push(ExpressionStack.Pop() % value);
                         break;
+                    case Instruction.NEG: ExpressionStack.Push(-ExpressionStack.Pop()); break;
+
+                    case Instruction.OUT: Output(ExpressionStack.Pop()); break;
+
+                    default: throw new RuntimeException($"Illegal opcode: {code[pc - 1]}");
                 }
                 Report(pc);
             }
@@ -124,6 +129,12 @@ namespace DecompilableLanguage.Runtime
                 Console.WriteLine("}");
 
             }
+        }
+
+        private void Output(int value)
+        {
+            if (Debug) Console.WriteLine($"Output: {value}");
+            else Console.Write(value);
         }
 
         public class RuntimeException: Exception

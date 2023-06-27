@@ -16,6 +16,8 @@ The runtime features a 4-Byte aligned expression stack, as well as a data-area c
 | Mul       | 0x0C | Multiplies the topmost 2 values and pushes the result on the stack |
 | Div       | 0x0D | Divides the topmost 2 values and pushes the result on the stack |
 | Mod       | 0x0E | Multiplies the topmost 2 values and pushes the remainder on the stack |
+| Neg       | 0x0F | Negates the topmost value on the stack |
+| Out       | 0x20 | Prints the current top of the Expression stack |
 
 
 ### Push
@@ -111,3 +113,23 @@ Example:
         ...         --Stack: {74,57,31,20}
         Mod         --Stack: {74,57,11}
         Mod         --Stack: {16,2}
+
+### Neg
+```Neg```
+Negates the topmost values of the stack.
+Example:
+
+    Code:
+        ...         --Stack: {20}
+        Neg         --Stack: {-20}
+        Neg         --Stack: {20}
+
+### Out
+```Out```
+Prints the top of the stack.
+Example: 
+
+    Code:
+        ...         --Stack: {20, 22}
+        Out         --Stack: {20}, Console: "22"
+        Out         --Stack: {}, Console: "2220"

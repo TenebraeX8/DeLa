@@ -51,7 +51,7 @@ PRODUCTIONS
                         code.Store(obj.adr);
                 .)
 
-                |  "OUT" Expression
+                |  "OUT" Expression (.code.Out();.)
                 ]            
     .
 
@@ -59,7 +59,7 @@ PRODUCTIONS
                 [
                     Addop<out op> (.if(op == Instruction.SUB) isNeg = true;.)
                 ] 
-                Term 
+                Term (.if(isNeg)code.Neg();.)
                 {
                     Addop<out op> 
                     Term           (.code.Instr(op);.)
