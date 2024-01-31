@@ -11,15 +11,17 @@ namespace DecompilableLanguage.Decompiler
     {
         public byte Instr { get; set; } = 0;
         public int Value = 0;
+        public int identLevel = 0;
         public DecompilerNode Parent = null;
         public DecompilerNode Next = null;
         public DecompilerNode LeftChild = null;
         public DecompilerNode RightChild = null;
 
-        public DecompilerNode(byte instr, int value = 0)
+        public DecompilerNode(byte instr, int value = 0, int identLevel = 0)
         {
             this.Instr = instr;
             this.Value = value;
+            this.identLevel = identLevel;
         }
     }
 }

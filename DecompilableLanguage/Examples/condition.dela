@@ -1,0 +1,11 @@
+SCRIPT minimal
+VAR x,y,z;
+
+x = 1;
+
+IF x DO 
+  x = INC x;
+  OUT x;
+END
+
+END minimal.

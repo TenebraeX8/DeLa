@@ -203,8 +203,8 @@ public class UTF8Buffer: Buffer {
 public class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
-	const int maxT = 27;
-	const int noSym = 27;
+	const int maxT = 29;
+	const int noSym = 29;
 
 
 	public Buffer buffer; // scanner buffer
@@ -363,8 +363,10 @@ public class Scanner {
 			case "END": t.kind = 5; break;
 			case "VAR": t.kind = 7; break;
 			case "OUT": t.kind = 11; break;
-			case "INC": t.kind = 12; break;
-			case "DEC": t.kind = 13; break;
+			case "IF": t.kind = 12; break;
+			case "DO": t.kind = 13; break;
+			case "INC": t.kind = 14; break;
+			case "DEC": t.kind = 15; break;
 			default: break;
 		}
 	}
@@ -417,37 +419,37 @@ public class Scanner {
 			case 9:
 				{t.kind = 10; break;}
 			case 10:
-				{t.kind = 14; break;}
-			case 11:
-				{t.kind = 15; break;}
-			case 12:
 				{t.kind = 16; break;}
-			case 13:
+			case 11:
 				{t.kind = 17; break;}
-			case 14:
+			case 12:
 				{t.kind = 18; break;}
-			case 15:
+			case 13:
 				{t.kind = 19; break;}
-			case 16:
+			case 14:
 				{t.kind = 20; break;}
-			case 17:
+			case 15:
 				{t.kind = 21; break;}
+			case 16:
+				{t.kind = 22; break;}
+			case 17:
+				{t.kind = 23; break;}
 			case 18:
 				if (ch == '>') {AddCh(); goto case 19;}
 				else {goto case 0;}
 			case 19:
-				{t.kind = 22; break;}
+				{t.kind = 24; break;}
 			case 20:
 				if (ch == '<') {AddCh(); goto case 21;}
 				else {goto case 0;}
 			case 21:
-				{t.kind = 23; break;}
-			case 22:
-				{t.kind = 24; break;}
-			case 23:
 				{t.kind = 25; break;}
-			case 24:
+			case 22:
 				{t.kind = 26; break;}
+			case 23:
+				{t.kind = 27; break;}
+			case 24:
+				{t.kind = 28; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);

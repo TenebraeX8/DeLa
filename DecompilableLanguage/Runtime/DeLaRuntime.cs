@@ -112,6 +112,12 @@ namespace DecompilableLanguage.Runtime
 
                     case Instruction.OUT: Output(ExpressionStack.Pop()); break;
 
+                    case Instruction.COND_JMP:
+                        int distance = ReadImmediate(ref pc);
+                        if (ExpressionStack.Pop() == 0)
+                            pc += distance;
+                        break;
+
                     default: throw new RuntimeException($"Illegal opcode: {code[pc - 1]}");
                 }
                 Report(pc);
@@ -122,7 +128,8 @@ namespace DecompilableLanguage.Runtime
         {
             if (Debug)
             {
-                Console.WriteLine($"PC {pc}: ");
+                string msg = pc < this.code.Length ? "" : " (outside)";
+                Console.WriteLine($"PC {pc}{msg}: ");
                 Console.Write("    Expr. Stack: {");
                 bool first = true;
                 foreach (var val in this.ExpressionStack)

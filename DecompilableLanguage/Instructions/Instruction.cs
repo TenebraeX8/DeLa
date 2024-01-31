@@ -31,5 +31,7 @@ namespace DecompilableLanguage.Instructions
 
         public const byte OUT = 0x20;
 
+        public const byte COND_JMP = 0x41;
+
     }
 }

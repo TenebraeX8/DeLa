@@ -54,6 +54,7 @@ namespace DecompilableLanguage.Decompiler
         {
             if (node == null)
                 throw new DecompilerException("Node was null!");
+
             switch(node.Instr)
             {
                 case Instruction.PUSH: return node.Value.ToString();        //Immediate Value
@@ -75,6 +76,10 @@ namespace DecompilableLanguage.Decompiler
                 case Instruction.DEC: return $"DEC ({Generate(node.LeftChild)})";
                 case Instruction.NOT: return $"~({Generate(node.LeftChild)})";
                 case Instruction.OUT: return $"OUT {Generate(node.LeftChild)}";
+                case Instruction.COND_JMP: return $"IF {Generate(node.LeftChild)} DO";
+
+                //Artificial end of scope
+                case 0xFF: return "END";
                 default:
                     throw new DecompilerException($"Unknown opcode {node.Instr}");
             }
@@ -86,6 +91,9 @@ namespace DecompilableLanguage.Decompiler
             DecompilerNode root = null;
             Stack<DecompilerNode> ExprStack = new Stack<DecompilerNode>();
 
+            HashSet<int> ScopeEnds = new HashSet<int>();
+            int identLevel = 0;
+
             DecompilerNode node;
             while (pc < code.Length)
             {
@@ -93,13 +101,13 @@ namespace DecompilableLanguage.Decompiler
                 {
                     case Instruction.PUSH:
                     case Instruction.LOAD:
-                        ExprStack.Push(new DecompilerNode(code[pc - 1], ReadImmediate(ref pc)));
+                        ExprStack.Push(new DecompilerNode(code[pc - 1], ReadImmediate(ref pc), identLevel));
                         break;
                     case Instruction.POP:
                         ExprStack.Pop();
                         break;
                     case Instruction.STORE:
-                        node = new DecompilerNode(code[pc - 1], ReadImmediate(ref pc));
+                        node = new DecompilerNode(code[pc - 1], ReadImmediate(ref pc), identLevel);
                         node.LeftChild = ExprStack.Pop();
                         if (root == null) root = node;
                         else
@@ -119,7 +127,7 @@ namespace DecompilableLanguage.Decompiler
                     case Instruction.AND:
                     case Instruction.OR:
                     case Instruction.XOR:
-                        node = new DecompilerNode(code[pc - 1]);
+                        node = new DecompilerNode(code[pc - 1], identLevel:identLevel);
                         node.RightChild = ExprStack.Pop();
                         node.LeftChild = ExprStack.Pop();
                         ExprStack.Push(node);
@@ -128,12 +136,12 @@ namespace DecompilableLanguage.Decompiler
                     case Instruction.INC:
                     case Instruction.DEC:
                     case Instruction.NOT:
-                        node = new DecompilerNode(code[pc - 1]);
+                        node = new DecompilerNode(code[pc - 1], identLevel: identLevel);
                         node.LeftChild = ExprStack.Pop();
                         ExprStack.Push(node);
                         break;
                     case Instruction.OUT:
-                        node = new DecompilerNode(code[pc - 1]);
+                        node = new DecompilerNode(code[pc - 1], identLevel: identLevel);
                         node.LeftChild = ExprStack.Pop();
                         if (root == null) root = node;
                         else
@@ -143,6 +151,29 @@ namespace DecompilableLanguage.Decompiler
                             cur.Next = node;
                         }
                         break;
+
+                    case Instruction.COND_JMP:
+                        node = new DecompilerNode(code[pc - 1], ReadImmediate(ref pc), identLevel);
+                        node.LeftChild = ExprStack.Pop();
+                        if (root == null) root = node;
+                        else
+                        {
+                            DecompilerNode cur = root;
+                            while (cur.Next != null) cur = cur.Next;
+                            cur.Next = node;
+                        }
+                        ScopeEnds.Add(pc + node.Value);
+                        identLevel++;
+                        break;
+                }
+                if (ScopeEnds.Contains(pc))
+                {
+                    node = new DecompilerNode((byte)0xFF);
+                    identLevel--;
+
+                    DecompilerNode cur = root;
+                    while (cur.Next != null) cur = cur.Next;
+                    cur.Next = node;
                 }
             }
             string name = table?.Name ?? "<Unnamed>";
@@ -162,7 +193,13 @@ namespace DecompilableLanguage.Decompiler
 
             while (root != null)
             {
-                sb.Append(this.Generate(root) + ";\n");
+                string ident = "";
+                for (int i = 0; i < root.identLevel; i++)
+                    ident += "  ";
+                sb.Append(ident + this.Generate(root));
+                if (root.Instr != Instruction.COND_JMP)
+                    sb.Append(";");
+                sb.Append("\n");
                 root = root.Next;
             }
             sb.Append($"\nEND {name}.");

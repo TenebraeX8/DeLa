@@ -52,6 +52,7 @@ PRODUCTIONS
                 .)
 
                 |  "OUT" Expression (.code.Out();.)
+                |  "IF" Expression (.CodeJump jmp = new CodeJump(code);.) "DO" Statements (.jmp.SetTarget();.)"END" 
                 ]            
     .
 

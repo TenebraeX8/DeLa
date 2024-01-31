@@ -1,5 +1,6 @@
 ﻿using DecompilableLanguage.Compiler;
 using DecompilableLanguage.Decompiler;
+using DecompilableLanguage.Instructions;
 using DecompilableLanguage.Runtime;
 
 namespace DecompilableLanguage 
@@ -10,6 +11,10 @@ namespace DecompilableLanguage
         {
             var compiler = new DeLaCompiler(args[0]);
             compiler.Compile(args[1]);
+
+            Console.WriteLine($"------------Deassembled------------");
+            Console.WriteLine(DeLaDeassembler.Deassemble(compiler.GenerateCode()));
+
 
             Console.WriteLine($"------------Running------------");
             var runtime = new DeLaRuntime(compiler.GenerateCode(), compiler.GetDataSize()) { Debug=true};

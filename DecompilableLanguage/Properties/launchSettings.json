@@ -2,7 +2,7 @@
   "profiles": {
     "DecompilableLanguage": {
       "commandName": "Project",
-      "commandLineArgs": "test.inp test.out"
+      "commandLineArgs": "test4.inp test.out"
     }
   }
 }

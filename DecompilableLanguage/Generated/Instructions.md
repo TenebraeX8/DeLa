@@ -17,15 +17,16 @@ The runtime features a 4-Byte aligned expression stack, as well as a data-area c
 | Div       | 0x0D | Divides the topmost 2 values and pushes the result on the stack |
 | Mod       | 0x0E | Multiplies the topmost 2 values and pushes the remainder on the stack |
 | Neg       | 0x0F | Negates the topmost value on the stack |
-| INC       | 0x10 | Increases the topmost value on the stack by 1 |
-| DEC       | 0x11 | Decreases the topmost value on the stack by 1 |
-| SHR       | 0x12 | Shift Right on bitlevel |
-| SHL       | 0x13 | Shift Left on bitlevel |
-| NOT       | 0x14 | Negation on bitlevel |
-| AND       | 0x15 | And on bitlevel |
-| OR        | 0x16 | Or on bitlevel |
-| XOR       | 0x17 | Xor on bitlevel |
+| Inc       | 0x10 | Increases the topmost value on the stack by 1 |
+| Dec       | 0x11 | Decreases the topmost value on the stack by 1 |
+| Shr       | 0x12 | Shift Right on bitlevel |
+| Shl       | 0x13 | Shift Left on bitlevel |
+| Not       | 0x14 | Negation on bitlevel |
+| And       | 0x15 | And on bitlevel |
+| Or        | 0x16 | Or on bitlevel |
+| Xor       | 0x17 | Xor on bitlevel |
 | Out       | 0x20 | Prints the current top of the Expression stack |
+| Cond. Jmp | 0x41 | Dependent on the uppermost stack, increase the PC by the specified byte-number |
 
 
 ### Push
@@ -222,3 +223,14 @@ Example:
         ...         --Stack: {20, 22}
         Out         --Stack: {20}, Console: "22"
         Out         --Stack: {}, Console: "2220"
+
+### Conditional Jump
+```CondJmp imm32```
+If the top of the stack is 0, a relative jump by the specified number of bytes is executed.
+Example: 
+
+    Code:
+        ...         --Stack: {20, 0}
+        CondJmp 1   --Stack: {20}
+        Out         --Stack: {20}, not executed due to jump
+        Out         --Stack: {}, Console: "20"

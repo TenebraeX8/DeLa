@@ -31,6 +31,17 @@ namespace DecompilableLanguage.Compiler.Code
             code[pc++] = (byte)((value >> 24) & 0xFF);
         }
 
+        public void PutImmediate(int pos, int value)
+        {
+            if(pos >= 0 && pos + 4 <= pc)
+            {
+                code[pos] = (byte)(value & 0xFF);
+                code[pos + 1] = (byte)((value >> 8) & 0xFF);
+                code[pos + 2] = (byte)((value >> 16) & 0xFF);
+                code[pos + 3] = (byte)((value >> 24) & 0xFF);
+            }
+        }
+
         public void Instr(byte op)
         {
             CheckBuffer();
@@ -62,6 +73,8 @@ namespace DecompilableLanguage.Compiler.Code
         public void And() => Instr(Instruction.AND);
         public void Or() => Instr(Instruction.OR);
         public void Xor() => Instr(Instruction.XOR);
+
+        public void CondJmp(int value = 0) => ImmediateInstr(Instruction.COND_JMP, value);
 
         public byte[] Generate() => this.code.Take(this.pc).ToArray();
     }
